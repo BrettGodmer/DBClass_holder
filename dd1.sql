@@ -23,15 +23,15 @@ CONSTRAINT IC1 CHECK (priority IN ('high', 'medium', 'low')),
 /*
 IC2: The cost of a high priority order is above 2000.
 */
-CONSTRAINT IC2 CHECK (CASE(WHEN priority ='high' THEN cost > 2000)),
+CONSTRAINT IC2 CHECK (NOT(priority ='high' AND cost < 2000)),
 /*
 IC3: The cost of a medium priority order is between 800 and 2200 (inclusive).
 */
-CONSTRAINT IC3 CHECK (CASE(WHEN priority = 'medium' THEN cost >= 800 AND cost <= 2200)),
+CONSTRAINT IC3 CHECK (NOT(priority = 'medium' AND cost < 801 AND cost > 2201)),
 /*
 IC4: The cost of a low priority order is less than 1000.
 */
-CONSTRAINT IC4 CHECK (CASE(WHEN priority = 'low' THEN cost < 1000))
+CONSTRAINT IC4 CHECK (NOT(priority = 'low' AND cost > 1000))
 );
 --
 --
