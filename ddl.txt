@@ -1,0 +1,188 @@
+SQL> --
+SQL> -- Author: <<< YOUR NAME GOES HERE >>>
+SQL> --
+SQL> -- IMPORTANT: use the names IC-1, IC-2, etc. as given below.
+SQL> -- --------------------------------------------------------------------
+SQL> /*The following DROP command is inserted for convenience so that if you need
+SQL> to recompile your code, it will drop the table (if it already exists).
+SQL> */
+SQL> DROP TABLE Orders CASCADE CONSTRAINTS;
+DROP TABLE Orders CASCADE CONSTRAINTS
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> DROP TABLE OrderLine CASCADE CONSTRAINTS;
+DROP TABLE OrderLine CASCADE CONSTRAINTS
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> --
+SQL> CREATE TABLE Orders
+  2  (
+  3  orderNum INTEGER PRIMARY KEY,
+  4  priority CHAR(10) NOT NULL,
+  5  cost INTEGER NOT NULL,
+  6  /*
+  7  IC1: The priority is one of: high, medium, or low
+  8  */
+  9  CONSTRAINT IC1 CHECK (priority in ('high', 'medium', 'low'))
+ 10  /*
+ 11  IC2: The cost of a high priority order is above 2000.
+ 12  */
+ 13  CONSTRAINT IC2 CHECK (WHEN priority ='high' THEN cost > 2000)
+ 14  /*
+ 15  IC3: The cost of a medium priority order is between 800 and 2200 (inclusive).
+ 16  */
+ 17  CONSTRAINT IC3 CHECK (WHEN priority = 'medium' THEN cost >= 800 AND cost <= 2200)
+ 18  /*
+ 19  IC4: The cost of a low priority order is less than 1000.
+ 20  */
+ 21  CONSTRAINT IC4 CHECK (WHEN priority = 'low' THEN cost < 1000)
+ 22  );
+CONSTRAINT IC2 CHECK (WHEN priority ='high' THEN cost > 2000)
+*
+ERROR at line 13:
+ORA-00907: missing right parenthesis 
+
+
+SQL> --
+SQL> --
+SQL> CREATE TABLE OrderLine
+  2  (
+  3  orderNum INTEGER,
+  4  lineNum INTEGER,
+  5  item CHAR (10) NOT NULL,
+  6  quantity INTEGER,
+  7  PRIMARY KEY (orderNum, lineNum),
+  8  /*
+  9  IC5: Every order line must belong to an order in the Order table.
+ 10  Also: if an order is deleted then all its order lines must be deleted.
+ 11  IMPORTANT: DO NOT declare this IC as DEFERRABLE.
+ 12  */
+ 13  CONSTRAINT IC5 FOREIGN KEY (orderNum)
+ 14  				     REFERENCES Orders(orderNum)
+ 15  				     ON DELETE CASCADE
+ 16  );
+				REFERENCES Orders(orderNum)
+				           *
+ERROR at line 14:
+ORA-00942: table or view does not exist 
+
+
+SQL> --
+SQL> -- ----------------------------------------------------------------
+SQL> -- TESTING THE SCHEMA
+SQL> -- ----------------------------------------------------------------
+SQL> INSERT INTO Orders VALUES (10, 'high', 2400);
+INSERT INTO Orders VALUES (10, 'high', 2400)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> INSERT INTO Orders VALUES (20, 'high', 1900);
+INSERT INTO Orders VALUES (20, 'high', 1900)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> INSERT INTO Orders VALUES (30, 'high', 2100);
+INSERT INTO Orders VALUES (30, 'high', 2100)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> INSERT INTO Orders VALUES (40, 'medium', 700);
+INSERT INTO Orders VALUES (40, 'medium', 700)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> INSERT INTO Orders VALUES (50, 'low', 1100);
+INSERT INTO Orders VALUES (50, 'low', 1100)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> INSERT INTO Orders VALUES (60, 'low', 900);
+INSERT INTO Orders VALUES (60, 'low', 900)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> SELECT * from Orders;
+SELECT * from Orders
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> -- ----------------------------------------------------------------
+SQL> INSERT INTO OrderLine VALUES (10, 1, 'AAA', 200);
+INSERT INTO OrderLine VALUES (10, 1, 'AAA', 200)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> INSERT INTO OrderLine VALUES (10, 2, 'BBB', 300);
+INSERT INTO OrderLine VALUES (10, 2, 'BBB', 300)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> INSERT INTO OrderLine VALUES (60, 1, 'CCC', 5);
+INSERT INTO OrderLine VALUES (60, 1, 'CCC', 5)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> INSERT INTO OrderLine VALUES (15, 1, 'AAA', 7);
+INSERT INTO OrderLine VALUES (15, 1, 'AAA', 7)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> SELECT * FROM OrderLine;
+SELECT * FROM OrderLine
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> --
+SQL> DELETE FROM Orders WHERE orderNum = 10;
+DELETE FROM Orders WHERE orderNum = 10
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> SELECT * From Orders;
+SELECT * From Orders
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> SELECT * FROM OrderLine;
+SELECT * FROM OrderLine
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> --
+SQL> SET ECHO OFF
