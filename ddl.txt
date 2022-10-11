@@ -1,5 +1,5 @@
 SQL> --
-SQL> -- Author: <<< YOUR NAME GOES HERE >>>
+SQL> -- Author: Brett Godmer
 SQL> --
 SQL> -- IMPORTANT: use the names IC-1, IC-2, etc. as given below.
 SQL> -- --------------------------------------------------------------------
@@ -29,24 +29,24 @@ SQL> CREATE TABLE Orders
   6  /*
   7  IC1: The priority is one of: high, medium, or low
   8  */
-  9  CONSTRAINT IC1 CHECK (priority in ('high', 'medium', 'low'))
+  9  CONSTRAINT IC1 CHECK (priority in ('high', 'medium', 'low')),
  10  /*
  11  IC2: The cost of a high priority order is above 2000.
  12  */
- 13  CONSTRAINT IC2 CHECK (WHEN priority ='high' THEN cost > 2000)
+ 13  CONSTRAINT IC2 CHECK (WHEN priority ='high' THEN cost > 2000),
  14  /*
  15  IC3: The cost of a medium priority order is between 800 and 2200 (inclusive).
  16  */
- 17  CONSTRAINT IC3 CHECK (WHEN priority = 'medium' THEN cost >= 800 AND cost <= 2200)
+ 17  CONSTRAINT IC3 CHECK (WHEN priority = 'medium' THEN cost >= 800 AND cost <= 2200),
  18  /*
  19  IC4: The cost of a low priority order is less than 1000.
  20  */
  21  CONSTRAINT IC4 CHECK (WHEN priority = 'low' THEN cost < 1000)
  22  );
-CONSTRAINT IC2 CHECK (WHEN priority ='high' THEN cost > 2000)
-*
+CONSTRAINT IC2 CHECK (WHEN priority ='high' THEN cost > 2000),
+                           *
 ERROR at line 13:
-ORA-00907: missing right parenthesis 
+ORA-00920: invalid relational operator 
 
 
 SQL> --
