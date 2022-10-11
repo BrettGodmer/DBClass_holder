@@ -29,25 +29,22 @@ SQL> CREATE TABLE Orders
   6  /*
   7  IC1: The priority is one of: high, medium, or low
   8  */
-  9  CONSTRAINT IC1 CHECK (priority in ('high', 'medium', 'low')),
+  9  CONSTRAINT IC1 CHECK (priority IN ('high', 'medium', 'low')),
  10  /*
  11  IC2: The cost of a high priority order is above 2000.
  12  */
- 13  CONSTRAINT IC2 CHECK (WHEN priority ='high' THEN cost > 2000),
+ 13  CONSTRAINT IC2 CHECK (NOT( priority ='high' AND cost > 2000)),
  14  /*
  15  IC3: The cost of a medium priority order is between 800 and 2200 (inclusive).
  16  */
- 17  CONSTRAINT IC3 CHECK (WHEN priority = 'medium' THEN cost >= 800 AND cost <= 2200),
+ 17  CONSTRAINT IC3 CHECK (NOT( priority = 'medium' AND cost >= 800 AND cost <= 2200)),
  18  /*
  19  IC4: The cost of a low priority order is less than 1000.
  20  */
- 21  CONSTRAINT IC4 CHECK (WHEN priority = 'low' THEN cost < 1000)
+ 21  CONSTRAINT IC4 CHECK (NOT( priority = 'low' AND cost < 1000))
  22  );
-CONSTRAINT IC2 CHECK (WHEN priority ='high' THEN cost > 2000),
-                           *
-ERROR at line 13:
-ORA-00920: invalid relational operator 
 
+Table created.
 
 SQL> --
 SQL> --
@@ -67,11 +64,8 @@ SQL> CREATE TABLE OrderLine
  14  				     REFERENCES Orders(orderNum)
  15  				     ON DELETE CASCADE
  16  );
-				REFERENCES Orders(orderNum)
-				           *
-ERROR at line 14:
-ORA-00942: table or view does not exist 
 
+Table created.
 
 SQL> --
 SQL> -- ----------------------------------------------------------------
@@ -79,110 +73,94 @@ SQL> -- TESTING THE SCHEMA
 SQL> -- ----------------------------------------------------------------
 SQL> INSERT INTO Orders VALUES (10, 'high', 2400);
 INSERT INTO Orders VALUES (10, 'high', 2400)
-            *
+*
 ERROR at line 1:
-ORA-00942: table or view does not exist 
+ORA-02290: check constraint (GODMERB.IC2) violated 
 
 
 SQL> INSERT INTO Orders VALUES (20, 'high', 1900);
-INSERT INTO Orders VALUES (20, 'high', 1900)
-            *
-ERROR at line 1:
-ORA-00942: table or view does not exist 
 
+1 row created.
 
 SQL> INSERT INTO Orders VALUES (30, 'high', 2100);
 INSERT INTO Orders VALUES (30, 'high', 2100)
-            *
+*
 ERROR at line 1:
-ORA-00942: table or view does not exist 
+ORA-02290: check constraint (GODMERB.IC2) violated 
 
 
 SQL> INSERT INTO Orders VALUES (40, 'medium', 700);
-INSERT INTO Orders VALUES (40, 'medium', 700)
-            *
-ERROR at line 1:
-ORA-00942: table or view does not exist 
 
+1 row created.
 
 SQL> INSERT INTO Orders VALUES (50, 'low', 1100);
-INSERT INTO Orders VALUES (50, 'low', 1100)
-            *
-ERROR at line 1:
-ORA-00942: table or view does not exist 
 
+1 row created.
 
 SQL> INSERT INTO Orders VALUES (60, 'low', 900);
 INSERT INTO Orders VALUES (60, 'low', 900)
-            *
+*
 ERROR at line 1:
-ORA-00942: table or view does not exist 
+ORA-02290: check constraint (GODMERB.IC4) violated 
 
 
 SQL> SELECT * from Orders;
-SELECT * from Orders
-              *
-ERROR at line 1:
-ORA-00942: table or view does not exist 
 
+  ORDERNUM PRIORITY         COST                                                
+---------- ---------- ----------                                                
+        20 high             1900                                                
+        40 medium            700                                                
+        50 low              1100                                                
 
 SQL> -- ----------------------------------------------------------------
 SQL> INSERT INTO OrderLine VALUES (10, 1, 'AAA', 200);
 INSERT INTO OrderLine VALUES (10, 1, 'AAA', 200)
-            *
+*
 ERROR at line 1:
-ORA-00942: table or view does not exist 
+ORA-02291: integrity constraint (GODMERB.IC5) violated - parent key not found 
 
 
 SQL> INSERT INTO OrderLine VALUES (10, 2, 'BBB', 300);
 INSERT INTO OrderLine VALUES (10, 2, 'BBB', 300)
-            *
+*
 ERROR at line 1:
-ORA-00942: table or view does not exist 
+ORA-02291: integrity constraint (GODMERB.IC5) violated - parent key not found 
 
 
 SQL> INSERT INTO OrderLine VALUES (60, 1, 'CCC', 5);
 INSERT INTO OrderLine VALUES (60, 1, 'CCC', 5)
-            *
+*
 ERROR at line 1:
-ORA-00942: table or view does not exist 
+ORA-02291: integrity constraint (GODMERB.IC5) violated - parent key not found 
 
 
 SQL> INSERT INTO OrderLine VALUES (15, 1, 'AAA', 7);
 INSERT INTO OrderLine VALUES (15, 1, 'AAA', 7)
-            *
+*
 ERROR at line 1:
-ORA-00942: table or view does not exist 
+ORA-02291: integrity constraint (GODMERB.IC5) violated - parent key not found 
 
 
 SQL> SELECT * FROM OrderLine;
-SELECT * FROM OrderLine
-              *
-ERROR at line 1:
-ORA-00942: table or view does not exist 
 
+no rows selected
 
 SQL> --
 SQL> DELETE FROM Orders WHERE orderNum = 10;
-DELETE FROM Orders WHERE orderNum = 10
-            *
-ERROR at line 1:
-ORA-00942: table or view does not exist 
 
+0 rows deleted.
 
 SQL> SELECT * From Orders;
-SELECT * From Orders
-              *
-ERROR at line 1:
-ORA-00942: table or view does not exist 
 
+  ORDERNUM PRIORITY         COST                                                
+---------- ---------- ----------                                                
+        20 high             1900                                                
+        40 medium            700                                                
+        50 low              1100                                                
 
 SQL> SELECT * FROM OrderLine;
-SELECT * FROM OrderLine
-              *
-ERROR at line 1:
-ORA-00942: table or view does not exist 
 
+no rows selected
 
 SQL> --
 SQL> SET ECHO OFF
