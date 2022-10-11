@@ -33,15 +33,15 @@ SQL> CREATE TABLE Orders
  10  /*
  11  IC2: The cost of a high priority order is above 2000.
  12  */
- 13  CONSTRAINT IC2 CHECK (NOT( priority ='high' AND cost > 2000)),
+ 13  CONSTRAINT IC2 CHECK (NOT(priority ='high' AND cost < 2000)),
  14  /*
  15  IC3: The cost of a medium priority order is between 800 and 2200 (inclusive).
  16  */
- 17  CONSTRAINT IC3 CHECK (NOT( priority = 'medium' AND cost >= 800 AND cost <= 2200)),
+ 17  CONSTRAINT IC3 CHECK (NOT(priority = 'medium' AND cost < 801 AND cost > 2201)),
  18  /*
  19  IC4: The cost of a low priority order is less than 1000.
  20  */
- 21  CONSTRAINT IC4 CHECK (NOT( priority = 'low' AND cost < 1000))
+ 21  CONSTRAINT IC4 CHECK (NOT(priority = 'low' AND cost > 1000))
  22  );
 
 Table created.
@@ -72,67 +72,56 @@ SQL> -- ----------------------------------------------------------------
 SQL> -- TESTING THE SCHEMA
 SQL> -- ----------------------------------------------------------------
 SQL> INSERT INTO Orders VALUES (10, 'high', 2400);
-INSERT INTO Orders VALUES (10, 'high', 2400)
-*
-ERROR at line 1:
-ORA-02290: check constraint (GODMERB.IC2) violated 
-
-
-SQL> INSERT INTO Orders VALUES (20, 'high', 1900);
 
 1 row created.
 
-SQL> INSERT INTO Orders VALUES (30, 'high', 2100);
-INSERT INTO Orders VALUES (30, 'high', 2100)
+SQL> INSERT INTO Orders VALUES (20, 'high', 1900);
+INSERT INTO Orders VALUES (20, 'high', 1900)
 *
 ERROR at line 1:
 ORA-02290: check constraint (GODMERB.IC2) violated 
 
+
+SQL> INSERT INTO Orders VALUES (30, 'high', 2100);
+
+1 row created.
 
 SQL> INSERT INTO Orders VALUES (40, 'medium', 700);
 
 1 row created.
 
 SQL> INSERT INTO Orders VALUES (50, 'low', 1100);
-
-1 row created.
-
-SQL> INSERT INTO Orders VALUES (60, 'low', 900);
-INSERT INTO Orders VALUES (60, 'low', 900)
+INSERT INTO Orders VALUES (50, 'low', 1100)
 *
 ERROR at line 1:
 ORA-02290: check constraint (GODMERB.IC4) violated 
 
 
+SQL> INSERT INTO Orders VALUES (60, 'low', 900);
+
+1 row created.
+
 SQL> SELECT * from Orders;
 
   ORDERNUM PRIORITY         COST                                                
 ---------- ---------- ----------                                                
-        20 high             1900                                                
+        10 high             2400                                                
+        30 high             2100                                                
         40 medium            700                                                
-        50 low              1100                                                
+        60 low               900                                                
 
 SQL> -- ----------------------------------------------------------------
 SQL> INSERT INTO OrderLine VALUES (10, 1, 'AAA', 200);
-INSERT INTO OrderLine VALUES (10, 1, 'AAA', 200)
-*
-ERROR at line 1:
-ORA-02291: integrity constraint (GODMERB.IC5) violated - parent key not found 
 
+1 row created.
 
 SQL> INSERT INTO OrderLine VALUES (10, 2, 'BBB', 300);
-INSERT INTO OrderLine VALUES (10, 2, 'BBB', 300)
-*
-ERROR at line 1:
-ORA-02291: integrity constraint (GODMERB.IC5) violated - parent key not found 
 
+1 row created.
 
 SQL> INSERT INTO OrderLine VALUES (60, 1, 'CCC', 5);
-INSERT INTO OrderLine VALUES (60, 1, 'CCC', 5)
-*
-ERROR at line 1:
-ORA-02291: integrity constraint (GODMERB.IC5) violated - parent key not found 
 
+1 row created.
 
 SQL> INSERT INTO OrderLine VALUES (15, 1, 'AAA', 7);
 INSERT INTO OrderLine VALUES (15, 1, 'AAA', 7)
@@ -143,24 +132,30 @@ ORA-02291: integrity constraint (GODMERB.IC5) violated - parent key not found
 
 SQL> SELECT * FROM OrderLine;
 
-no rows selected
+  ORDERNUM    LINENUM ITEM         QUANTITY                                     
+---------- ---------- ---------- ----------                                     
+        10          1 AAA               200                                     
+        10          2 BBB               300                                     
+        60          1 CCC                 5                                     
 
 SQL> --
 SQL> DELETE FROM Orders WHERE orderNum = 10;
 
-0 rows deleted.
+1 row deleted.
 
 SQL> SELECT * From Orders;
 
   ORDERNUM PRIORITY         COST                                                
 ---------- ---------- ----------                                                
-        20 high             1900                                                
+        30 high             2100                                                
         40 medium            700                                                
-        50 low              1100                                                
+        60 low               900                                                
 
 SQL> SELECT * FROM OrderLine;
 
-no rows selected
+  ORDERNUM    LINENUM ITEM         QUANTITY                                     
+---------- ---------- ---------- ----------                                     
+        60          1 CCC                 5                                     
 
 SQL> --
 SQL> SET ECHO OFF
