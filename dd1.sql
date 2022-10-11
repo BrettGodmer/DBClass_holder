@@ -1,7 +1,7 @@
 SPOOL ddl.txt
 SET ECHO ON
 --
--- Author: <<< YOUR NAME GOES HERE >>>
+-- Author: Brett Godmer
 --
 -- IMPORTANT: use the names IC-1, IC-2, etc. as given below.
 -- --------------------------------------------------------------------
@@ -19,15 +19,15 @@ cost INTEGER NOT NULL,
 /*
 IC1: The priority is one of: high, medium, or low
 */
-CONSTRAINT IC1 CHECK (priority in ('high', 'medium', 'low'))
+CONSTRAINT IC1 CHECK (priority in ('high', 'medium', 'low')),
 /*
 IC2: The cost of a high priority order is above 2000.
 */
-CONSTRAINT IC2 CHECK (WHEN priority ='high' THEN cost > 2000)
+CONSTRAINT IC2 CHECK (WHEN priority ='high' THEN cost > 2000),
 /*
 IC3: The cost of a medium priority order is between 800 and 2200 (inclusive).
 */
-CONSTRAINT IC3 CHECK (WHEN priority = 'medium' THEN cost >= 800 AND cost <= 2200)
+CONSTRAINT IC3 CHECK (WHEN priority = 'medium' THEN cost >= 800 AND cost <= 2200),
 /*
 IC4: The cost of a low priority order is less than 1000.
 */
