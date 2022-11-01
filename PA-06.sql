@@ -43,7 +43,9 @@ For every employee who works more than 30 hours on any project: Find the ssn, ln
 */
 SELECT e.ssn, e.Lname, wo.Pno, p.Pname, wo.Hours
 FROM EMPLOYEE e, WORKS_ON wo, PROJECT p
-WHERE e.Ssn = wo.Essn, wo.Pno = p.Pnumber, wo.Hours > 30
+WHERE e.Ssn = wo.Essn 
+	AND wo.Pno = p.Pnumber 
+	AND wo.Hours > 30
 ORDER BY e.Ssn DESC;
 --
 -- JOINING 3 TABLES ---------------------------
@@ -54,7 +56,9 @@ For every employee who works on a project that is not controlled by the departme
 */
 SELECT e.Lname, e.Dno, wo.Pno, p.Dnum
 FROM EMPLOYEE e, WORKS_ON wo, PROJECT p
-WHERE e.Ssn = wo.Essn, wo.Pno = p.Pnumber, e.Dno != p.Dnum
+WHERE e.Ssn = wo.Essn 
+	AND wo.Pno = p.Pnumber 
+	AND e.Dno != p.Dnum
 GROUP BY e.Lname;
 --
 -- JOINING 4 TABLES -------------------------
@@ -64,7 +68,11 @@ For every employee who works for more than 20 hours on any project that is locat
 */
 SELECT Ssn, Lname, Pno, Plocation, Dnum, Dlocation
 FROM EMPLOYEE e, WORKS_ON wo, PROJECT p, DEPT_LOCATIONS dl
-WHERE e.Ssn = wo.Essn, wo.Pno = p.Pnumber, p.Dnum = dl.Dnumber, p.Hours > 20, dl.Dlocation = p.Plocation
+WHERE e.Ssn = wo.Essn 
+	AND wo.Pno = p.Pnumber 
+	AND p.Dnum = dl.Dnumber 
+	AND p.Hours > 20 
+	AND dl.Dlocation = p.Plocation
 GROUP BY e.Lname;
 --
 -- SELF JOIN -------------------------------------------
@@ -75,7 +83,8 @@ For every employee whose salary is less than 70% of his/her immediate supervisor
 */
 SELECT Ssn, Lname, Salary, Ssn, Lname, Salary
 FROM EMPLOYEE e1, EMPLOYEE e2
-WHERE e1.Super_ssn = e2.Ssn, e1.Salary = e2.Salary*0.7
+WHERE e1.Super_ssn = e2.Ssn 
+	AND e1.Salary = e2.Salary*0.7
 ORDER BY e1.Ssn;
 --
 -- USING MORE THAN ONE RANGE VARIABLE ON ONE TABLE -------------------
@@ -85,7 +94,8 @@ For projects located in Houston: Find pairs of last names such that the two empl
 */
 SELECT DISTINCT e1.Lname, e2.Lname
 FROM EMPLOYEE e1, EMPLOYEE e2, WORKS_ON wo
-WHERE e1.Ssn = wo.Essn, e2.Ssn = wo.Essn
+WHERE e1.Ssn = wo.Essn 
+	AND e2.Ssn = wo.Essn
 GROUP BY e1.Lname;
 --
 ------------------------------------
