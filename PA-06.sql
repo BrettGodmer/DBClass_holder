@@ -33,7 +33,7 @@ Find the ssn and last name of every employee who doesn't have a  supervisor, or 
 SELECT Ssn, Lname
 FROM Employee
 WHERE Super_ssn IS NULL
-OR Lname LIKE '[a][a]%'
+OR Lname LIKE '[aa]%'
 ORDER BY Ssn DESC;
 --
 -- JOINING 3 TABLES ------------------------------
@@ -59,7 +59,7 @@ FROM EMPLOYEE e, WORKS_ON wo, PROJECT p
 WHERE e.Ssn = wo.Essn 
 	AND wo.Pno = p.Pnumber 
 	AND e.Dno != p.Dnum
-GROUP BY e.Lname;
+ORDER BY e.Lname;
 --
 -- JOINING 4 TABLES -------------------------
 --
@@ -73,7 +73,7 @@ WHERE e.Ssn = wo.Essn
 	AND p.Dnum = dl.Dnumber 
 	AND wo.Hours > 20 
 	AND dl.Dlocation = p.Plocation
-GROUP BY e.Lname;
+ORDER BY e.Lname;
 --
 -- SELF JOIN -------------------------------------------
 -- 
@@ -96,7 +96,7 @@ SELECT DISTINCT e1.Lname, e2.Lname
 FROM EMPLOYEE e1, EMPLOYEE e2, WORKS_ON wo
 WHERE e1.Ssn = wo.Essn 
 	AND e2.Ssn = wo.Essn
-GROUP BY e1.Lname;
+ORDER BY e1.Lname;
 --
 ------------------------------------
 --
