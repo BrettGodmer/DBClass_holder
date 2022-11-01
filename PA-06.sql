@@ -71,7 +71,7 @@ FROM EMPLOYEE e, WORKS_ON wo, PROJECT p, DEPT_LOCATIONS dl
 WHERE e.Ssn = wo.Essn 
 	AND wo.Pno = p.Pnumber 
 	AND p.Dnum = dl.Dnumber 
-	AND p.Hours > 20 
+	AND wo.Hours > 20 
 	AND dl.Dlocation = p.Plocation
 GROUP BY e.Lname;
 --
