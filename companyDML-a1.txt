@@ -89,10 +89,14 @@ SQL> */
 SQL> SELECT e1.Ssn, e1.Lname, e1.Salary, e2.Ssn, e2.Lname, e2.Salary
   2  FROM EMPLOYEE e1, EMPLOYEE e2
   3  WHERE e1.Super_ssn = e2.Ssn
-  4  	     AND e1.Salary = e2.Salary*0.7
+  4  	     AND e1.Salary < e2.Salary*0.7
   5  ORDER BY e1.Ssn;
 
-no rows selected
+SSN       LNAME               SALARY SSN       LNAME               SALARY       
+--------- --------------- ---------- --------- --------------- ----------       
+453453453 English              25000 333445555 Wong                 40000       
+987987987 Jabbar               25000 987654321 Wallace              43000       
+999887777 Zelaya               25000 987654321 Wallace              43000       
 
 SQL> --
 SQL> -- USING MORE THAN ONE RANGE VARIABLE ON ONE TABLE -------------------
