@@ -84,7 +84,7 @@ For every employee whose salary is less than 70% of his/her immediate supervisor
 SELECT e1.Ssn, e1.Lname, e1.Salary, e2.Ssn, e2.Lname, e2.Salary
 FROM EMPLOYEE e1, EMPLOYEE e2
 WHERE e1.Super_ssn = e2.Ssn 
-	AND e1.Salary = e2.Salary*0.7
+	AND e1.Salary < e2.Salary*0.7
 ORDER BY e1.Ssn;
 --
 -- USING MORE THAN ONE RANGE VARIABLE ON ONE TABLE -------------------
